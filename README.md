@@ -1,6 +1,6 @@
 # VRP-project
 
-Victoria Kogan (7886506) & Samuel Barrett (#)\
+Victoria Kogan & Samuel Barrett\
 COMP 4300 - Computer Networks\
 Winter 2024\
 University of Manitoba
