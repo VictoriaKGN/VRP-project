@@ -22,7 +22,7 @@ def nearest_neighbor(model):
     route = [curr_location]
     visited[curr_location] = True
     
-    while curr_capacity +demands[curr_location] <= capacity:
+    while np.sum(visited) < num_locations:
       min_dist = float('inf')
       nearest = None
       
@@ -37,6 +37,7 @@ def nearest_neighbor(model):
       route.append(nearest)
       visited[nearest] = True
       curr_capacity += demands[nearest]
+      curr_location = nearest
       
     routes.append(route)
     
