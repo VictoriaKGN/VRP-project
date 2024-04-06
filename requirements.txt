@@ -2,3 +2,4 @@ python3
 scipy
 numpy
 ortools
+matplotlib

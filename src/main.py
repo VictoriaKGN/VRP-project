@@ -1,10 +1,10 @@
 import numpy as np
-from algorithms.models import create_6L2V_capacity_data_model
+from data.models import create_6L2V_capacity_data_model
 from algorithms.two_opt import two_opt
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.guided_local_search import guided_local_search
 from algorithms.tabu_search import tabu_search
-from algorithms.benchmark import benchmark_suite, random_routes, calc_total_distance
+from benchmark import benchmark_suite, random_routes, calc_total_distance
 
 def print_solution(data, manager, routing, solution):
     print(f"Objective: {solution.ObjectiveValue()}")

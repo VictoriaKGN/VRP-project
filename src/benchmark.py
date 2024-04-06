@@ -1,4 +1,4 @@
-from algorithms.models import create_model
+from data.models import create_model
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.two_opt import two_opt
 import time
