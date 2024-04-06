@@ -3,7 +3,7 @@ from algorithms.models import create_6L2V_capacity_data_model
 from algorithms.two_opt import two_opt
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.guided_local_search import guided_local_search
-
+from algorithms.tabu_search import tabu_search
 
 def random_routes(data):
   distance_matrix = data["distance_matrix"]
@@ -61,7 +61,7 @@ def print_solution(data, manager, routing, solution):
         total_distance += route_distance
         total_load += route_load
     print(f"Total distance of all routes: {total_distance}m")
-    print(f"Total load of all routes: {total_load}")
+    print(f"Total load of all routes: {total_load}\n")
 
 
 model = create_6L2V_capacity_data_model()
@@ -90,5 +90,10 @@ for route in routes:
   distance += calc_total_distance(route, model["distance_matrix"])
 print(f"Total distance travelled: {distance}\n")
 
+print(f"Guided Local Search routes:")
 manager, routing, solution = guided_local_search(model)
+print_solution(model, manager, routing, solution)
+
+print(f"Tabu Search routes:")
+manager, routing, solution = tabu_search(model)
 print_solution(model, manager, routing, solution)
