@@ -4,6 +4,10 @@ Each model contains a distance matrix, number of vehicles, and the depot locatio
 """
 
 import math
+import random
+from scipy.spatial import distance_matrix
+import matplotlib.pyplot as plt
+import numpy
 
 def create_4L1V_data_model():
   """ 
@@ -68,3 +72,53 @@ def create_6L2V_capacity_data_model():
   data["vehicle_capacities"] = [10, 15]
   data["depot"] = 0
   return data
+
+def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities):
+  """
+  Returns a capacitated data model of n randomized locations and demands
+  The vehicle count and capacities are passed as input, as these are commonly known ahead of time.
+  Gets the distance matrix from random coordinates using Manhatthan distance (Minkowski distance with p-norm = 1)
+  see: https://en.wikipedia.org/wiki/Minkowski_distance
+  and https://en.wikipedia.org/wiki/Taxicab_geometry
+  """
+  data = {}
+  data['num_vehicles'] = num_vehicles
+  data['vehicle_capacities'] = vehicle_capacities
+  data['depot'] = 0
+  data['demands'] = assign_demand(num_locations, numpy.sum(vehicle_capacities))
+  coords = generate_random_coordinates(distance_scale, num_locations)
+  data['distance_matrix'] = distance_matrix(coords, coords, p=1, threshold=1000000)
+  return data, coords
+
+def generate_random_coordinates(distance_scale, num_locations):
+  """
+  Returns a list of num_locations coordinates
+  """
+  coords = []
+  for _ in range(0,num_locations):
+    x = random.randint(0,distance_scale)
+    y = random.randint(0,distance_scale)
+    coords.append([x,y])
+  return coords
+
+def assign_demand(num_locations, total_capacity):
+  """
+  Returns a list of demands corresponding to each location, equal to total vehicle capacity.
+  Each location is guaranteed to have 1 demand, the rest are assigned at random
+  """
+  demand = [1]*num_locations
+  if total_capacity > num_locations:
+    for _ in range(num_locations, total_capacity):
+      index = random.randint(0,num_locations-1)
+      demand[index] += 1
+  return demand
+
+
+if __name__ == '__main__':
+  print('quick test')
+  data, coords = create_model(10,5,5,[1,2,3,4,5])
+  print(data['distance_matrix'])
+  # get the coordinate arrays and show them on a graph
+  x, y = zip(*coords)
+  plt.scatter(x,y)
+  plt.show()
