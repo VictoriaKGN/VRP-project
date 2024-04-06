@@ -39,6 +39,7 @@ def nearest_neighbor(model):
       curr_capacity += demands[nearest]
       curr_location = nearest
       
+    route.append(depot_index)
     routes.append(route)
     
   return routes
