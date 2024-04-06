@@ -90,6 +90,7 @@ def test_small_map():
   rand_solution = random_routes(model)
   to_rand_routes, to_rand_distance, to_rand_time = test_two_opt(model, rand_solution, 1000)
 
+  # temporary print mess, ideally we save to CSV or something?
   print("""Nearest Neighbour:
         \tDistance: {nndist}
         \tTime: {nntime}
