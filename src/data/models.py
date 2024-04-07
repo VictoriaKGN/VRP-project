@@ -7,7 +7,7 @@ import math
 import random
 from scipy.spatial import distance_matrix
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 
 def create_4L1V_data_model():
   """ 
@@ -83,9 +83,10 @@ def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities
   """
   data = {}
   coords = generate_random_coordinates(distance_scale, num_locations)
-  data["distance_matrix"] = distance_matrix(coords, coords, p=1, threshold=1000000)
+  dist_matrix = distance_matrix(coords, coords, p=1, threshold=1000000).tolist()
+  data["distance_matrix"] = np.rint(dist_matrix).astype(int)
   data["num_vehicles"] = num_vehicles
-  demands = assign_demand(num_locations-1, numpy.sum(vehicle_capacities))
+  demands = assign_demand(num_locations-1, np.sum(vehicle_capacities))
   demands.insert(0, 0)
   data["demands"] = demands
   data["vehicle_capacities"] = vehicle_capacities
