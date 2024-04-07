@@ -32,30 +32,4 @@ def print_solution(data, manager, routing, solution):
     print(f"Total distance of all routes: {total_distance}m")
     print(f"Total load of all routes: {total_load}\n")
 
-
-# model = create_6L2V_capacity_data_model()
-
-# routes = nearest_neighbor(model)
-# print("Nearest Neighbor routes:")
-# distance = calc_total_distance(routes)
-# print(f"Total distance travelled: {distance}\n")
-
-# init_solution = random_routes(model)
-# print(f"Randomized routes:")
-# init_distance = calc_total_distance(init_solution)
-# print(f"Total distance travelled: {init_distance}\n")
-
-# routes = two_opt(model, init_solution, 1000)
-# print("Two-Opt routes:")
-# distance = calc_total_distance(routes)
-# print(f"Total distance travelled: {distance}\n")
-
-# print(f"Guided Local Search routes:")
-# manager, routing, solution = guided_local_search(model)
-# print_solution(model, manager, routing, solution)
-
-# print(f"Tabu Search routes:")
-# manager, routing, solution = tabu_search(model)
-# print_solution(model, manager, routing, solution)
-
 benchmark_suite()

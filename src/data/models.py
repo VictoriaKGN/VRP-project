@@ -90,7 +90,6 @@ def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities
   data["demands"] = demands
   data["vehicle_capacities"] = vehicle_capacities
   data["depot"] = 0
-  print(data)
   
   return data, coords
 
