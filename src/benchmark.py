@@ -1,4 +1,5 @@
 from data.models import create_model
+from data.graphs import draw_solution
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.two_opt import two_opt
 from algorithms.guided_local_search import guided_local_search
@@ -163,18 +164,29 @@ def test_small_map():
   gls_distance, gls_time = test_guided_local_search(model)
   ts_distance, ts_time = test_tabu_search(model)
 
+  draw_solution(coords, nn_routes, 'nearest neighbour')
+  draw_solution(coords,to_routes, 'two-opt (NN)')
+  #draw_solution(coords, ts_routes, 'tabu search')
+  draw_solution(coords, rand_routes, 'random solution')
+  draw_solution(coords, to_rand_routes, 'two-opt (random input)')
+  #draw_solution(coords, gls_routes, 'guided local search')
+
   # temporary print mess, ideally we save to CSV or something?
   print("""
         Nearest Neighbour:
+        \tRoute: {nnroute}
         \tDistance: {nndist}
         \tTime: {nntime}
         Two-Opt (NN):
+        \tRoute: {toroute}
         \tDistance: {todist}
         \tTime: {totime}
         Random:
+        \tRoute: {randroute}
         \tDistance: {randdist}
         \tTime: {randtime}
         Two-Opt (rand):
+        \tRoute: {torandroute}
         \tDistance: {torandomdist}
         \tTime: {torandomtime}
         Guided Local Search:
@@ -184,12 +196,16 @@ def test_small_map():
         \tDistance: {tsdistance}
         \tTime: {tstime}
         """.format(
+          nnroute=nn_routes,
           nndist=nn_distance,
           nntime=nn_time,
+          toroute=to_routes,
           todist=to_distance,
           totime=to_time,
+          randroute=rand_routes,
           randdist=rand_distance,
           randtime=rand_time,
+          torandroute=to_rand_routes,
           torandomdist=to_rand_distance,
           torandomtime=to_rand_time,
           glsdistance=gls_distance,
