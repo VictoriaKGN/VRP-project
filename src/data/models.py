@@ -82,12 +82,16 @@ def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities
   and https://en.wikipedia.org/wiki/Taxicab_geometry
   """
   data = {}
-  data['num_vehicles'] = num_vehicles
-  data['vehicle_capacities'] = vehicle_capacities
-  data['depot'] = 0
-  data['demands'] = assign_demand(num_locations, numpy.sum(vehicle_capacities))
   coords = generate_random_coordinates(distance_scale, num_locations)
-  data['distance_matrix'] = distance_matrix(coords, coords, p=1, threshold=1000000)
+  data["distance_matrix"] = distance_matrix(coords, coords, p=1, threshold=1000000)
+  data["num_vehicles"] = num_vehicles
+  demands = assign_demand(num_locations-1, numpy.sum(vehicle_capacities))
+  demands.insert(0, 0)
+  data["demands"] = demands
+  data["vehicle_capacities"] = vehicle_capacities
+  data["depot"] = 0
+  print(data)
+  
   return data, coords
 
 def generate_random_coordinates(distance_scale, num_locations):

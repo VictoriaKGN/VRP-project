@@ -1,6 +1,8 @@
 from data.models import create_model
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.two_opt import two_opt
+from algorithms.guided_local_search import guided_local_search
+from algorithms.tabu_search import tabu_search
 import time
 import numpy as np
 
@@ -31,6 +33,7 @@ def random_routes(data):
 def calc_route_distance(route, dist_matrix):
   """
   Calculate distance of a route taken by a vehicle
+  For algorithms implemented by us
   """
   total_dist = 0
   num_locations = len(route)
@@ -43,13 +46,43 @@ def calc_route_distance(route, dist_matrix):
   return total_dist
 
 
+def calc_route_distance_ortools(routing, solution, vehicle_id):
+  """
+  Calculate distance of a route taken by a vehicle
+  For algorithms implemented by OR-Tools
+  """
+  total_dist = 0
+  index = routing.Start(vehicle_id)
+    
+  while not routing.IsEnd(index):
+    previous_index = index
+    index = solution.Value(routing.NextVar(index))
+    total_dist += routing.GetArcCostForVehicle(
+        previous_index, index, vehicle_id
+    )
+  
+  return total_dist
+
+
 def calc_total_distance(routes, distance_matrix):
   """
-  calculate the total distance travelled by every vehicle
+  Calculate the total distance travelled by every vehicle
+  For algorithms implemented by us
   """
   total = 0
   for route in routes:
     total += calc_route_distance(route, distance_matrix)
+  return total
+
+
+def calc_total_distance_ortools(num_vehicles, routing, solution):
+  """
+  Calculate the total distance travelled by every vehicle
+  For algorithms implemented by OR-Tools
+  """
+  total = 0
+  for vehicle_id in range(num_vehicles):
+    total += calc_route_distance_ortools(routing, solution, vehicle_id)
   return total
 
 
@@ -78,6 +111,17 @@ def test_two_opt(model, routes, iterations):
 
   return routes, distance, exec_time
 
+def test_guided_local_search(model):
+  """
+  Returns routes, total distance and execution time of guided local search algorithm
+  """
+  start = time.perf_counter_ns()
+  manager, routing, solution = guided_local_search(model)
+  end = time.perf_counter_ns()
+  exec_time = (end - start) / 1000000000
+  distance = calc_total_distance_ortools(model["num_vehicles"], routing, solution)
+
+  return distance, exec_time
 
 def test_small_map():
   """
@@ -89,6 +133,7 @@ def test_small_map():
   to_routes, to_distance, to_time = test_two_opt(model, nn_routes, 1000)
   rand_solution = random_routes(model)
   to_rand_routes, to_rand_distance, to_rand_time = test_two_opt(model, rand_solution, 1000)
+  gls_distance, gls_time = test_guided_local_search(model)
 
   # temporary print mess, ideally we save to CSV or something?
   print("""Nearest Neighbour:
@@ -100,13 +145,18 @@ def test_small_map():
         Two-Opt (rand):
         \tDistance: {torandomdist}
         \tTime: {torandomtime}
+        Guided Local Search:
+        \tDistance: {glsdistance}
+        \tTime: {glstime}
         """.format(
           nndist=nn_distance,
           nntime=nn_time,
           todist=to_distance,
           totime=to_time,
           torandomdist=to_rand_distance,
-          torandomtime=to_rand_time
+          torandomtime=to_rand_time,
+          glsdistance=gls_distance,
+          glstime=gls_time
         ))
 
 
