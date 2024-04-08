@@ -12,4 +12,4 @@ def draw_solution(coords, routes, title):
     route_coords = [[x[index], y[index]] for index in route]
     route_x, route_y = zip(*route_coords)
     plt.plot(route_x, route_y)
-  plt.show()
+  plt.savefig('./data/figures/' + title + '.png')
