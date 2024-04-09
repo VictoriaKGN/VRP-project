@@ -199,12 +199,12 @@ def test_all_algorithms(model, coords, config_name, count_index, ratio_index):
   save_times(nn_time, to_time, rand_time, to_rand_time, gls_time, ts_time, count_index, ratio_index)
 
   draw_map(coords, config_name, True)
-  draw_solution(coords, nn_routes, config_name + ' nearest neighbour')
-  draw_solution(coords,to_routes, config_name + ' two-opt (NN)')
-  draw_solution(coords, rand_routes, config_name + ' random solution')
-  draw_solution(coords, to_rand_routes, config_name + ' two-opt (random input)')
-  draw_solution(coords, gls_routes, config_name + ' guided local search')
-  draw_solution(coords, ts_routes, config_name + ' tabu search')
+  draw_solution(coords, nn_routes, config_name + ' Nearest Neighbour')
+  draw_solution(coords,to_routes, config_name + ' Two-Opt (NN)')
+  draw_solution(coords, rand_routes, config_name + ' Random Solution')
+  draw_solution(coords, to_rand_routes, config_name + ' Two-Opt (RAND)')
+  draw_solution(coords, gls_routes, config_name + ' Guided Local Search')
+  draw_solution(coords, ts_routes, config_name + ' Tabu Search')
 
 
 def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations, count_index):
@@ -214,7 +214,7 @@ def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations, cou
   for i in range(len(fleet_ratio)):
     fleet_size = int(num_locations * fleet_ratio[i])
     model = change_fleet_config(model, fleet_size, [vehicle_capacity]*fleet_size, num_locations)
-    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=fleet_size,y=num_locations), count_index, i)
+    test_all_algorithms(model, coords, '{x}V, {y}L, Equal Capacity'.format(x=fleet_size,y=num_locations), count_index, i)
 
 
 def test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity):
