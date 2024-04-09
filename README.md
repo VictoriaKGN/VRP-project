@@ -21,7 +21,9 @@ Please ensure you have these dependencies installed on your system. As with any 
 
 ## How to run
 From the root directory, run the analysis as follows:
-python3 `src/benchmark.py`
+```
+python3 src/benchmark.py
+```
 
 # What it does
 This will run our benchmark suite, which generates a set of problem instances with different numbers of locations to be serviced and runs each algorithm on these instances multiple times with different fleet sizes.
