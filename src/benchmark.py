@@ -262,9 +262,10 @@ def test_fleets(model, coords, fleet_sizes, total_demand):
     test_all_algorithms(model, coords, '{x}V,1C'.format(x=size))
     
     # test where each vehicle has capacity = total_capacity/num_vehicles
-    split_capacity = total_capacity//size if total_capacity//size > 0 else 1
-    model = change_fleet_config(model, size, [split_capacity]*size)
-    test_all_algorithms(model, coords, '{x}V,splitC'.format(x=size))
+    if size > 1:
+      split_capacity = total_capacity//size if total_capacity//size > 0 else 1
+      model = change_fleet_config(model, size, [split_capacity]*size)
+      test_all_algorithms(model, coords, '{x}V,splitC'.format(x=size))
 
 
 def test_fleet_configs_on_maps(fleet_sizes, location_counts):
@@ -274,9 +275,10 @@ def test_fleet_configs_on_maps(fleet_sizes, location_counts):
   """
   total_demand = 1000
   for i in location_counts:
+    print('testing {i} locations'.format(i=i))
     # initially created using 1 vehicle with total_demand capacity, modified in test_fleets
     model, coords = create_model(1000, i, 1, [total_demand])
-    test_fleets(model, coords, fleet_sizes, i)
+    test_fleets(model, coords, fleet_sizes, total_demand)
 
 
 def change_fleet_config(model, num_vehicles, capacities):
@@ -290,8 +292,6 @@ def benchmark_suite():
   Run a series of tests on each algorithm and save the results
   """
   print('starting benchmarks...')
-  # model, coords = create_model(1000, 5, 1, [5])
-  # test_all_algorithms(model, coords, '5L,1V,1C,1000scale')
   fleet_sizes = [1,2,10,25]
   location_counts = [10,50,200]
   test_fleet_configs_on_maps(fleet_sizes, location_counts)
