@@ -155,8 +155,8 @@ def test_guided_local_search(model):
   manager, routing, solution = guided_local_search(model)
   end = time.perf_counter_ns()
   exec_time = (end - start) / 1000000000
-  distance = calc_total_distance_ortools(model["num_vehicles"], routing, solution)
-  routes = get_routes_ortools(manager, routing, solution, model["num_vehicles"])
+  distance = calc_total_distance_ortools(model["num_vehicles"], routing, solution) if solution else None
+  routes = get_routes_ortools(manager, routing, solution, model["num_vehicles"]) if solution else None
 
   return routes, distance, exec_time
 
@@ -169,8 +169,8 @@ def test_tabu_search(model):
   manager, routing, solution = tabu_search(model)
   end = time.perf_counter_ns()
   exec_time = (end - start) / 1000000000
-  distance = calc_total_distance_ortools(model["num_vehicles"], routing, solution)
-  routes = get_routes_ortools(manager, routing, solution, model["num_vehicles"])
+  distance = calc_total_distance_ortools(model["num_vehicles"], routing, solution) if solution else None
+  routes = get_routes_ortools(manager, routing, solution, model["num_vehicles"]) if solution else None
 
   return routes, distance, exec_time
 
