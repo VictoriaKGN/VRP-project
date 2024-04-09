@@ -11,7 +11,7 @@ def draw_solution(coords, routes, title):
     route_coords = [[x[index], y[index]] for index in route]
     route_x, route_y = zip(*route_coords)
     plt.plot(route_x, route_y)
-  plt.savefig('./data/figures/' + title + '.png')
+  plt.savefig('./src/data/figures/' + title + '.png')
   plt.close()
 
 
@@ -25,6 +25,6 @@ def draw_map(coords, title, save):
   plt.title(title)
   plt.legend()
   if save:
-    plt.savefig('./data/figures/' + title + '_map.png')
+    plt.savefig('./src/data/figures/' + title + '_map.png')
     plt.close()
   return x, y
