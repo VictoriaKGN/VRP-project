@@ -28,6 +28,6 @@ This will run our benchmark suite, which generates a set of problem instances wi
 •	Number of locations tested: 10, 50, 100, and 200.
 •	Fleet sizes (number of vehicles): 0.75, 0.5, 0.25 and 0.15 times the number of locations.
 
-The results are saved to CSV and to a series of graphs in the src/data/figures directory.
+The results are saved to CSV and to a series of graphs in the `src/data/figures` directory.
 
 For more information, please refer to the project report PDF.
