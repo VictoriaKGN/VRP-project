@@ -20,23 +20,28 @@ def two_opt(model, routes, num_iterations):
     distance_matrix = model["distance_matrix"]
     best_routes = routes.copy()
     
-    for _ in range(num_iterations):
-      selected_route_index = np.random.randint(0, len(routes))
-      selected_route = routes[selected_route_index]
-      
-      i, j = np.random.randint(1, len(selected_route) - 1, size=2)
-      if j < i:
-        i, j = j, i
+    # first check if there is any optimization possible
+    # any route length less than 5 cannot be optimized (including start and end point)
+    max_route_length = len(max(routes, key=len))
+    if max_route_length >= 5:
+      for _ in range(num_iterations):
+        selected_route = []
+        while len(selected_route) < 5:
+          selected_route_index = np.random.randint(0, len(routes))
+          selected_route = routes[selected_route_index]
+
+        i, j = np.random.randint(1, len(selected_route) - 1, size=2)
+        if j < i:
+          i, j = j, i
+          
+        new_route = selected_route.copy()
+        new_route[i:j] = selected_route[j - 1: i - 1: -1]
         
-      new_route = selected_route.copy()
-      new_route[i:j] = selected_route[j - 1: i - 1: -1]
-      
-      new_routes = routes.copy()
-      new_routes[selected_route_index] = new_route
-      
-      if calc_total_distance(new_routes[selected_route_index], distance_matrix) < calc_total_distance(best_routes[selected_route_index], distance_matrix):
-        best_routes = new_routes
+        new_routes = routes.copy()
+        new_routes[selected_route_index] = new_route
         
+        if calc_total_distance(new_routes[selected_route_index], distance_matrix) < calc_total_distance(best_routes[selected_route_index], distance_matrix):
+          best_routes = new_routes
     return best_routes
   
   for i in range(len(routes)):
