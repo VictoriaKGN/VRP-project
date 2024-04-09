@@ -182,54 +182,6 @@ def test_small_map():
   draw_map(coords, 'small', True)
   test_all_algorithms(model, coords, 'small_map')
 
-  # KEPT FOR REFERENCE, CAN BE DELETED ANYTIME
-  # # temporary print mess, ideally we save to CSV or something?
-  # print("""
-  #       Nearest Neighbour:
-  #       \tRoute: {nnroute}
-  #       \tDistance: {nndist}
-  #       \tTime: {nntime}
-  #       Two-Opt (NN):
-  #       \tRoute: {toroute}
-  #       \tDistance: {todist}
-  #       \tTime: {totime}
-  #       Random:
-  #       \tRoute: {randroute}
-  #       \tDistance: {randdist}
-  #       \tTime: {randtime}
-  #       Two-Opt (rand):
-  #       \tRoute: {torandroute}
-  #       \tDistance: {torandomdist}
-  #       \tTime: {torandomtime}
-  #       Guided Local Search:
-  #       \tRoute: {glsroute}
-  #       \tDistance: {glsdistance}
-  #       \tTime: {glstime}
-  #       Tabu Search:
-  #       \tRoute: {tsroute}
-  #       \tDistance: {tsdistance}
-  #       \tTime: {tstime}
-  #       """.format(
-  #         nnroute=nn_routes,
-  #         nndist=nn_distance,
-  #         nntime=nn_time,
-  #         toroute=to_routes,
-  #         todist=to_distance,
-  #         totime=to_time,
-  #         randroute=rand_routes,
-  #         randdist=rand_distance,
-  #         randtime=rand_time,
-  #         torandroute=to_rand_routes,
-  #         torandomdist=to_rand_distance,
-  #         torandomtime=to_rand_time,
-  #         glsroute=gls_routes,
-  #         glsdistance=gls_distance,
-  #         glstime=gls_time,
-  #         tsroute=ts_routes,
-  #         tsdistance=ts_distance,
-  #         tstime=ts_time
-  #       ))
-
 
 def test_all_algorithms(model, coords, config_name):
   """
@@ -257,15 +209,9 @@ def test_fleets(model, coords, fleet_sizes, total_demand):
   """
   total_capacity = int(total_demand * 1.2) # introduce a buffer to the vehicle capacities
   for size in fleet_sizes:
-    # test fleet where each vehicle has enough capacity to hit every location by itself
-    model = change_fleet_config(model, size, [total_capacity]*size)
-    test_all_algorithms(model, coords, '{x}V,1C'.format(x=size))
-    
-    # test where each vehicle has capacity = total_capacity/num_vehicles
-    if size > 1:
-      split_capacity = total_capacity//size if total_capacity//size > 0 else 1
-      model = change_fleet_config(model, size, [split_capacity]*size)
-      test_all_algorithms(model, coords, '{x}V,splitC'.format(x=size))
+    split_capacity = total_capacity//size if total_capacity//size > 0 else 1
+    model = change_fleet_config(model, size, [split_capacity]*size)
+    test_all_algorithms(model, coords, '{x}V,equal_capacity'.format(x=size))
 
 
 def test_fleet_configs_on_maps(fleet_sizes, location_counts):
