@@ -4,6 +4,7 @@ from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.two_opt import two_opt
 from algorithms.guided_local_search import guided_local_search
 from algorithms.tabu_search import tabu_search
+from data.results import save_results
 import time
 import numpy as np
 import copy
@@ -183,7 +184,7 @@ def test_small_map():
   test_all_algorithms(model, coords, 'small_map')
 
 
-def test_all_algorithms(model, coords, config_name):
+def test_all_algorithms(model, coords, config_name, count_index, ratio_index):
   """
   Run each algorithm on the given model and save to PNG with the given config name
   """
@@ -194,6 +195,9 @@ def test_all_algorithms(model, coords, config_name):
   gls_routes, gls_distance, gls_time = test_guided_local_search(model)
   ts_routes, ts_distance, ts_time = test_tabu_search(model)
 
+  save_distances(nn_distance, to_distance, rand_distance, to_rand_distance, gls_distance, ts_distance, count_index, ratio_index)
+  save_times(nn_time, to_time, rand_time, to_rand_time, gls_time, ts_time, count_index, ratio_index)
+
   draw_map(coords, config_name, True)
   draw_solution(coords, nn_routes, config_name + ' nearest neighbour')
   draw_solution(coords,to_routes, config_name + ' two-opt (NN)')
@@ -203,14 +207,14 @@ def test_all_algorithms(model, coords, config_name):
   draw_solution(coords, ts_routes, config_name + ' tabu search')
 
 
-def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations):
+def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations, count_index):
   """
   Test different fleet configurations on the same network of locations and demands
   """
-  for ratio in fleet_ratio:
-    fleet_size = int(num_locations * ratio)
+  for i in range(len(fleet_ratio)):
+    fleet_size = int(num_locations * fleet_ratio[i])
     model = change_fleet_config(model, fleet_size, [vehicle_capacity]*fleet_size, num_locations)
-    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=fleet_size,y=num_locations))
+    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=fleet_size,y=num_locations), count_index, i)
 
 
 def test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity):
@@ -218,11 +222,40 @@ def test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity):
   Runs each algorithm on a set of maps. Tests multiple fleet configurations for each map.
   Each algorithm runs every combination of fleet size and location count.
   """
-  for location_count in location_counts:
+  for i in range(len(location_counts)):
+    location_count = location_counts[i]
     print('testing {i} locations'.format(i=location_count))
     # initially created using 1 vehicle with enough capacity to hit every location. Modified in test_fleets
     model, coords = create_model(1000, location_count, 1, [location_count])
-    test_fleets(model, coords, vehicle_capacity, fleet_ratios, location_count)
+    test_fleets(model, coords, vehicle_capacity, fleet_ratios, location_count, i)
+
+
+def save_distances(nn_dist, to_dist, rand_dist, to_rand_dist, gls_dist, ts_dist, count_index, ratio_index):
+  """
+  Saves the distances outputted from the algorithms
+  """
+  row = ((count_index * 4) + 4) + ratio_index
+
+  save_results(f"C{row}", nn_dist)
+  save_results(f"D{row}", to_dist)
+  save_results(f"E{row}", rand_dist)
+  save_results(f"F{row}", to_rand_dist)
+  save_results(f"G{row}", gls_dist)
+  save_results(f"H{row}", ts_dist)
+
+
+def save_times(nn_time, to_time, rand_time, to_rand_time, gls_time, ts_time, count_index, ratio_index):
+  """
+  Saves the times outputted from the algorithms
+  """
+  row = ((count_index * 4) + 27) + ratio_index
+
+  save_results(f"C{row}", nn_time)
+  save_results(f"D{row}", to_time)
+  save_results(f"E{row}", rand_time)
+  save_results(f"F{row}", to_rand_time)
+  save_results(f"G{row}", gls_time)
+  save_results(f"H{row}", ts_time)
 
 
 def change_fleet_config(model, num_vehicles, capacities, num_locations):
