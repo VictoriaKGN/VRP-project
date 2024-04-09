@@ -86,8 +86,7 @@ def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities
   dist_matrix = distance_matrix(coords, coords, p=1, threshold=1000000).tolist()
   data["distance_matrix"] = np.rint(dist_matrix).astype(int)
   data["num_vehicles"] = num_vehicles
-  demands = assign_demand(num_locations-1, np.sum(vehicle_capacities))
-  demands.insert(0, 0)
+  demands = assign_demand(num_locations-1, int(np.sum(vehicle_capacities)*0.8), min(vehicle_capacities))
   data["demands"] = demands
   data["vehicle_capacities"] = vehicle_capacities
   data["depot"] = 0
@@ -105,16 +104,20 @@ def generate_random_coordinates(distance_scale, num_locations):
     coords.append([x,y])
   return coords
 
-def assign_demand(num_locations, total_capacity):
+def assign_demand(num_locations, total_capacity, vehicle_capacity):
   """
   Returns a list of demands corresponding to each location, equal to total vehicle capacity.
   Each location is guaranteed to have 1 demand, the rest are assigned at random
   """
   demand = [1]*num_locations
   if total_capacity > num_locations:
-    for _ in range(num_locations, total_capacity):
-      index = random.randint(0,num_locations-1)
+    for _ in range(num_locations, int(total_capacity*0.8)):
+      index = -1
+      # ensure demand at a single location does not exceed total vehicle capacity
+      while index < 0 or demand[index] >= vehicle_capacity-1:
+        index = random.randint(0,num_locations-1)
       demand[index] += 1
+  demand.insert(0, 0)
   return demand
 
 
