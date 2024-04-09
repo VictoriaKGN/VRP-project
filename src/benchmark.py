@@ -203,7 +203,7 @@ def test_all_algorithms(model, coords, config_name):
   draw_solution(coords, ts_routes, config_name + ' tabu search')
 
 
-def test_fleets(model, coords, fleet_sizes, total_demand):
+def test_fleets(model, coords, fleet_sizes, total_demand, num_locations):
   """
   Test different fleet configurations on the same network of locations and demands
   """
@@ -211,7 +211,7 @@ def test_fleets(model, coords, fleet_sizes, total_demand):
   for size in fleet_sizes:
     split_capacity = total_capacity//size if total_capacity//size > 0 else 1
     model = change_fleet_config(model, size, [split_capacity]*size)
-    test_all_algorithms(model, coords, '{x}V,equal_capacity'.format(x=size))
+    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=size,y=num_locations))
 
 
 def test_fleet_configs_on_maps(fleet_sizes, location_counts):
@@ -224,7 +224,7 @@ def test_fleet_configs_on_maps(fleet_sizes, location_counts):
     print('testing {i} locations'.format(i=i))
     # initially created using 1 vehicle with total_demand capacity, modified in test_fleets
     model, coords = create_model(1000, i, 1, [total_demand])
-    test_fleets(model, coords, fleet_sizes, total_demand)
+    test_fleets(model, coords, fleet_sizes, total_demand, i)
 
 
 def change_fleet_config(model, num_vehicles, capacities):
@@ -238,9 +238,14 @@ def benchmark_suite():
   Run a series of tests on each algorithm and save the results
   """
   print('starting benchmarks...')
-  fleet_sizes = [1,2,10,25]
-  location_counts = [10,50,200]
-  test_fleet_configs_on_maps(fleet_sizes, location_counts)
+  # this is the temporary code for debugging why or_tools is returning a None solution... hmm
+  model, coords = create_model(1000, 10, 5, [200]*5)
+  routes, distance, exec_time = test_tabu_search(model)
+  
+  # # This is the real test, different fleets and locations
+  # fleet_sizes = [1,2,10,25]
+  # location_counts = [10,50,200]
+  # test_fleet_configs_on_maps(fleet_sizes, location_counts)
   print('benchmark suite complete.')
 
 
