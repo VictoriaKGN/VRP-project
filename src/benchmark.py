@@ -237,13 +237,8 @@ def benchmark_suite():
   Run a series of tests on each algorithm and save the results
   """
   print('starting benchmarks...')
-  # this is the temporary code for debugging why or_tools is returning a None solution... hmm
-  # model, coords = create_model(1000, 10, 5, [200]*5)
-  # routes, distance, exec_time = test_guided_local_search(model)
-  
-  # This is the real test, different fleets and locations
   fleet_ratios = [0.75, 0.5, 0.25, 0.15]
-  location_counts = [100]
+  location_counts = [10,50,100,200]
   vehicle_capacity = 20
   test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity)
   print('benchmark suite complete.')
