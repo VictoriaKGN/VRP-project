@@ -10,7 +10,7 @@ University of Manitoba
 Our project aims to implement and compare the efficiency of various algorithms solving the Vehicle Routing Problem (VRP). Through comprehensive benchmarking, we assess the performance of each algorithm based on runtime and solution quality across a variety of VRP instances.
 
 ## Required Packages
-Please see the required libraries in requirements.txt:
+Please see the required libraries in `requirements.txt`:
 •	python3
 •	scipy
 •	numpy
