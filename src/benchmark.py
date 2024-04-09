@@ -203,28 +203,29 @@ def test_all_algorithms(model, coords, config_name):
   draw_solution(coords, ts_routes, config_name + ' tabu search')
 
 
-def test_fleets(model, coords, fleet_sizes, total_demand, num_locations):
+def test_fleets(model, coords, fleet_ratio, total_demand, num_locations):
   """
   Test different fleet configurations on the same network of locations and demands
   """
   total_capacity = int(total_demand * 1.2) # introduce a buffer to the vehicle capacities
-  for size in fleet_sizes:
-    split_capacity = total_capacity//size if total_capacity//size > 0 else 1
-    model = change_fleet_config(model, size, [split_capacity]*size)
-    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=size,y=num_locations))
+  for ratio in fleet_ratio:
+    fleet_size = int(num_locations * ratio)
+    split_capacity = total_capacity//fleet_size if total_capacity//fleet_size > 0 else 1
+    model = change_fleet_config(model, fleet_size, [split_capacity]*fleet_size)
+    test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=fleet_size,y=num_locations))
 
 
-def test_fleet_configs_on_maps(fleet_sizes, location_counts):
+def test_fleet_configs_on_maps(fleet_ratios, location_counts):
   """
   Runs each algorithm on a set of maps. Tests multiple fleet configurations for each map.
   Each algorithm runs every combination of fleet size and location count.
   """
   total_demand = 1000
-  for i in location_counts:
-    print('testing {i} locations'.format(i=i))
+  for location_count in location_counts:
+    print('testing {i} locations'.format(i=location_count))
     # initially created using 1 vehicle with total_demand capacity, modified in test_fleets
-    model, coords = create_model(1000, i, 1, [total_demand])
-    test_fleets(model, coords, fleet_sizes, total_demand, i)
+    model, coords = create_model(1000, location_count, 1, [total_demand])
+    test_fleets(model, coords, fleet_ratios, total_demand, location_count)
 
 
 def change_fleet_config(model, num_vehicles, capacities):
@@ -239,13 +240,13 @@ def benchmark_suite():
   """
   print('starting benchmarks...')
   # this is the temporary code for debugging why or_tools is returning a None solution... hmm
-  model, coords = create_model(1000, 10, 5, [200]*5)
-  routes, distance, exec_time = test_tabu_search(model)
+  # model, coords = create_model(1000, 10, 5, [200]*5)
+  # routes, distance, exec_time = test_guided_local_search(model)
   
-  # # This is the real test, different fleets and locations
-  # fleet_sizes = [1,2,10,25]
-  # location_counts = [10,50,200]
-  # test_fleet_configs_on_maps(fleet_sizes, location_counts)
+  # This is the real test, different fleets and locations
+  fleet_ratios = [0.75, 0.5, 0.25, 0.15]
+  location_counts = [100]
+  test_fleet_configs_on_maps(fleet_ratios, location_counts)
   print('benchmark suite complete.')
 
 

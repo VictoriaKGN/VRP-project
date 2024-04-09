@@ -86,7 +86,7 @@ def create_model(distance_scale, num_locations, num_vehicles, vehicle_capacities
   dist_matrix = distance_matrix(coords, coords, p=1, threshold=1000000).tolist()
   data["distance_matrix"] = np.rint(dist_matrix).astype(int)
   data["num_vehicles"] = num_vehicles
-  demands = assign_demand(num_locations-1, np.sum(vehicle_capacities))
+  demands = assign_demand(num_locations-1, int(np.sum(vehicle_capacities)*0.8))
   demands.insert(0, 0)
   data["demands"] = demands
   data["vehicle_capacities"] = vehicle_capacities
