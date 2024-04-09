@@ -1,4 +1,4 @@
-from data.models import create_model
+from data.models import create_model, assign_demand
 from data.graphs import draw_solution, draw_map
 from algorithms.nearest_neighbor import nearest_neighbor
 from algorithms.two_opt import two_opt
@@ -203,34 +203,32 @@ def test_all_algorithms(model, coords, config_name):
   draw_solution(coords, ts_routes, config_name + ' tabu search')
 
 
-def test_fleets(model, coords, fleet_ratio, total_demand, num_locations):
+def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations):
   """
   Test different fleet configurations on the same network of locations and demands
   """
-  total_capacity = int(total_demand * 1.2) # introduce a buffer to the vehicle capacities
   for ratio in fleet_ratio:
     fleet_size = int(num_locations * ratio)
-    split_capacity = total_capacity//fleet_size if total_capacity//fleet_size > 0 else 1
-    model = change_fleet_config(model, fleet_size, [split_capacity]*fleet_size)
+    model = change_fleet_config(model, fleet_size, [vehicle_capacity]*fleet_size, num_locations)
     test_all_algorithms(model, coords, '{x}V,{y}L,equal_capacity'.format(x=fleet_size,y=num_locations))
 
 
-def test_fleet_configs_on_maps(fleet_ratios, location_counts):
+def test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity):
   """
   Runs each algorithm on a set of maps. Tests multiple fleet configurations for each map.
   Each algorithm runs every combination of fleet size and location count.
   """
-  total_demand = 1000
   for location_count in location_counts:
     print('testing {i} locations'.format(i=location_count))
-    # initially created using 1 vehicle with total_demand capacity, modified in test_fleets
-    model, coords = create_model(1000, location_count, 1, [total_demand])
-    test_fleets(model, coords, fleet_ratios, total_demand, location_count)
+    # initially created using 1 vehicle with enough capacity to hit every location. Modified in test_fleets
+    model, coords = create_model(1000, location_count, 1, [location_count])
+    test_fleets(model, coords, vehicle_capacity, fleet_ratios, location_count)
 
 
-def change_fleet_config(model, num_vehicles, capacities):
+def change_fleet_config(model, num_vehicles, capacities, num_locations):
   model['num_vehicles'] = num_vehicles
   model['vehicle_capacities'] = capacities
+  model['demands'] = assign_demand(num_locations, np.sum(capacities), min(capacities))
   return model
 
 
@@ -246,7 +244,8 @@ def benchmark_suite():
   # This is the real test, different fleets and locations
   fleet_ratios = [0.75, 0.5, 0.25, 0.15]
   location_counts = [100]
-  test_fleet_configs_on_maps(fleet_ratios, location_counts)
+  vehicle_capacity = 20
+  test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity)
   print('benchmark suite complete.')
 
 
