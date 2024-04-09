@@ -214,7 +214,7 @@ def test_fleets(model, coords, vehicle_capacity, fleet_ratio, num_locations, cou
   for i in range(len(fleet_ratio)):
     fleet_size = int(num_locations * fleet_ratio[i])
     model = change_fleet_config(model, fleet_size, [vehicle_capacity]*fleet_size, num_locations)
-    test_all_algorithms(model, coords, '{x}V, {y}L, Equal Capacity'.format(x=fleet_size,y=num_locations), count_index, i)
+    test_all_algorithms(model, coords, '{x}L, {y}V, Equal Capacity'.format(x=num_locations, y=fleet_size), count_index, i)
 
 
 def test_fleet_configs_on_maps(fleet_ratios, location_counts, vehicle_capacity):
