@@ -7,10 +7,11 @@ def draw_solution(coords, routes, title):
   x,y = draw_map(coords, title, False)
   # routes have location index, the graph location is x[loc_index], y[loc_index]
   # i have several plot calls to make (each route), but it looks like multiple things can be plotted at once
-  for route in routes:
-    route_coords = [[x[index], y[index]] for index in route]
-    route_x, route_y = zip(*route_coords)
-    plt.plot(route_x, route_y)
+  if routes:
+    for route in routes:
+      route_coords = [[x[index], y[index]] for index in route]
+      route_x, route_y = zip(*route_coords)
+      plt.plot(route_x, route_y)
   plt.savefig('./src/data/figures/' + title + '.png')
   plt.close()
 

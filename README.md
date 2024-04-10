@@ -11,11 +11,11 @@ Our project aims to implement and compare the efficiency of various algorithms s
 
 ## Required Packages
 Please see the required libraries in `requirements.txt`:
-•	python3
-•	scipy
-•	numpy
-•	ortools
-•	matplotlib
+*	python3
+*	scipy
+*	numpy
+*	ortools
+*	matplotlib
 
 Please ensure you have these dependencies installed on your system. As with any python project, it is recommended to install the required packages and execute our project from within a virtual environment, see Python venv for details.
 
@@ -24,6 +24,7 @@ From the root directory, run the analysis as follows:
 ```
 python3 src/benchmark.py
 ```
+Please make sure that `results.xlsx` it closed prior to running or else results would not be able to be recorded in that file.
 
 # What it does
 This will run our benchmark suite, which generates a set of problem instances with different numbers of locations to be serviced and runs each algorithm on these instances multiple times with different fleet sizes.
