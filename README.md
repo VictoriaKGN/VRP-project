@@ -16,6 +16,7 @@ Please see the required libraries in `requirements.txt`:
 *	numpy
 *	ortools
 *	matplotlib
+* openpyxl
 
 Please ensure you have these dependencies installed on your system. As with any python project, it is recommended to install the required packages and execute our project from within a virtual environment, see Python venv for details.
 
